@@ -59,11 +59,13 @@ public class GetRecommendedVSphereHost implements Function<String, VSphereHost> 
                HostSystem[] hostSystems = cluster.getHosts();
                long maxMemory = Integer.MIN_VALUE;
                for (HostSystem hostSystem : hostSystems) {
-                  int currentMemory = hostSystem.getSummary().getQuickStats().getOverallMemoryUsage();
-                  long currentTotalMemory = hostSystem.getConfig().getSystemResources().getConfig().getMemoryAllocation().getLimit();
-                  if (currentTotalMemory - currentMemory > maxMemory) {
-                     curHostSystem = hostSystem;
-                     maxMemory = currentTotalMemory - currentMemory;
+                  if (!hostSystem.getRuntime().isInMaintenanceMode()){
+                     int currentMemory = hostSystem.getSummary().getQuickStats().getOverallMemoryUsage();
+                     long currentTotalMemory = hostSystem.getConfig().getSystemResources().getConfig().getMemoryAllocation().getLimit();
+                     if (currentTotalMemory - currentMemory > maxMemory) {
+                        curHostSystem = hostSystem;
+                        maxMemory = currentTotalMemory - currentMemory;
+                     }
                   }
                }
                break;
